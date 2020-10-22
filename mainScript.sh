@@ -16,7 +16,23 @@ read -p "Choose an option: " option
 
 
 case $option in
-	1 ) echo "1"
+	1 ) echo "1. Creating a new repository..."
+		newrep=null
+
+		while [ 1 ]
+		do
+
+		read -p "Enter a new name for your repository: " newrep
+		if [ -d "$newrep" ]; then
+
+		echo "There is already a repository with the given name. Please try again."
+		else 
+			mkdir $newrep
+			echo "You have successfully created a repository named $newrep"
+			break
+
+		fi
+		done
 	    ;;
 	2 ) echo "2"
 	    ;;
