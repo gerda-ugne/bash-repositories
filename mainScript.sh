@@ -73,7 +73,8 @@ case $option in
 			else
 				touch $newfile
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] $newfile added to repository" >> logfile.txt
-				echo "You have successfully created a repository named $newfile"
+				echo "You have successfully created a file named $newfile"
+				cd ..
 				break
 			fi
 			
