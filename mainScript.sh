@@ -29,7 +29,7 @@ case $option in
 		else 
 			mkdir $newrep
 			cd $newrep; touch logfile.txt; 
-			echo "Repository created: $date" >> logfile.txt
+			echo "Repository created: $(date)" >> logfile.txt
 			cd ..
 			echo "You have successfully created a repository named $newrep"
 			break
@@ -73,6 +73,7 @@ case $option in
 			echo -e "\n"
 		;;
 		4 ) echo "View the log file"
+			cat logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
 		;;
