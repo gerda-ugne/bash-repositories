@@ -28,7 +28,9 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir $newrep
-			cd $newrep; touch logfile.txt; cd ..
+			cd $newrep; touch logfile.txt; 
+			echo "Repository created: $date" >> logfile.txt
+			cd ..
 			echo "You have successfully created a repository named $newrep"
 			break
 
