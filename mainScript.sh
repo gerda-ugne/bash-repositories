@@ -65,19 +65,29 @@ case $option in
 		case $accessOption in
 		
 		1 ) echo "Add files to the repository"
+
+
+		echo "File added to repository: $(date)" >> logfile.txt #needs to add the name of the file 
 		;;
 		2 ) echo "Check out a file"
+
+
+		echo "File checked out: $(date)" >> logfile.txt #needs to add the name of the file and the user name
 		;;
 		3 ) echo -e  "Showing the contents..\n"
 			ls -l
 			echo -e "\n"
 		;;
 		4 ) echo "View the log file"
+			echo
 			cat logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
+
 		;;
 		6 ) echo "Rollback to a previous version"
+
+		echo "Version rolled back: $(date)" >> logfile.txt
 		;;
 		7 ) echo "Archive management"
 		;;
