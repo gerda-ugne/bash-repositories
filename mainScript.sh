@@ -68,8 +68,8 @@ case $option in
 		
 			newfile=null
 			read -p "Name the file you wish to add: " newfile
-			if [ -d $newfile ]; then
-				echo "There is already a file in the repository named $newfile\n"
+			if [ -f $newfile ]; then
+				echo -e "There is already a file in the repository named $newfile\n"
 			else
 				touch $newfile
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] $newfile added to repository" >> logfile.txt
