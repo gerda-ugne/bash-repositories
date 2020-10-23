@@ -70,9 +70,17 @@ case $option in
 		echo "File added to repository: $(date)" >> logfile.txt #needs to add the name of the file 
 		;;
 		2 ) echo "Check out a file"
-
-
-		echo "File checked out: $(date)" >> logfile.txt #needs to add the name of the file and the user name
+			filename=null
+			read -p "Enter the name of the file you wish to check out:   " filename
+			if [ -f $filename ]
+			then
+				{
+				echo -e "File found! Navigating.\n"
+				nano $filename
+				echo "File checked out: $filename $(date)" >> logfile.txt 
+				}
+			else echo "File not found"
+			fi
 		;;
 		3 ) echo -e  "Showing the contents..\n"
 			ls -l
