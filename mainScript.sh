@@ -29,7 +29,7 @@ case $option in
 		else 
 			mkdir $newrep
 			cd $newrep; touch logfile.txt; 
-			echo "Repository created: $date" >> logfile.txt
+			echo "Repository created: $(date)" >> logfile.txt
 			cd ..
 			echo "You have successfully created a repository named $newrep"
 			break
@@ -77,19 +77,35 @@ case $option in
 				cd ..
 				break
 			fi
-			
+      
 		;;
 		2 ) echo "Check out a file"
+			filename=null
+			read -p "Enter the name of the file you wish to check out:   " filename
+			if [ -f $filename ]
+			then
+				{
+				echo -e "File found! Navigating.\n"
+				nano $filename
+				echo "File checked out: $filename $(date)" >> logfile.txt 
+				}
+			else echo "File not found"
+			fi
 		;;
 		3 ) echo -e  "Showing the contents..\n"
 			ls -l
 			echo -e "\n"
 		;;
 		4 ) echo "View the log file"
+			echo
+			cat logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
+
 		;;
 		6 ) echo "Rollback to a previous version"
+
+		echo "Version rolled back: $(date)" >> logfile.txt
 		;;
 		7 ) echo "Archive management"
 		;;
