@@ -60,11 +60,23 @@ case $option in
 		echo "7. Archive management"
 		echo "0. Return"
 
-		read -p "Enter your option:" accessOption
+		read -p "Enter your option: " accessOption
 
 		case $accessOption in
 		
 		1 ) echo "Add files to the repository"
+		
+			newfile=null
+			read -p "Name the file you wish to add: " newfile
+			if [ -d $newfile ]; then
+				echo "There is already a file in the repository named $newfile\n"
+			else
+				touch $newfile
+				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] $newfile added to repository" >> logfile.txt
+				echo "You have successfully created a repository named $newfile"
+				break
+			fi
+			
 		;;
 		2 ) echo "Check out a file"
 		;;
