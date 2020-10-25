@@ -29,7 +29,7 @@ case $option in
 		else 
 			mkdir $newrep
 			cd $newrep; touch logfile.txt; 
-			echo "Repository created: $(date)" >> logfile.txt
+			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd ..
 			echo "You have successfully created a repository named $newrep"
 			break
@@ -67,7 +67,7 @@ case $option in
 		1 ) echo "Add files to the repository"
 
 
-		echo "File added to repository: $(date)" >> logfile.txt #needs to add the name of the file 
+		echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository:" >> logfile.txt #needs to add the name of the file 
 		;;
 		2 ) echo "Check out a file"
 			filename=null
@@ -77,7 +77,7 @@ case $option in
 				{
 				echo -e "File found! Navigating.\n"
 				nano $filename
-				echo "File checked out: $filename $(date)" >> logfile.txt 
+				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
 				}
 			else echo "File not found"
 			fi
@@ -95,7 +95,7 @@ case $option in
 		;;
 		6 ) echo "Rollback to a previous version"
 
-		echo "Version rolled back: $(date)" >> logfile.txt
+		echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Version rolled back." >> logfile.txt
 		;;
 		7 ) echo "Archive management"
 		;;
