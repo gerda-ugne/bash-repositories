@@ -93,8 +93,7 @@ case $option in
 				cp logfile.txt uncommittedlog.txt
 				
 				checkOption=-1
-				
-				until [ checkOption -eq 0 ]; do
+				until [ $checkOption -eq 0 ]; do
 				
 				case $checkOption in
 
