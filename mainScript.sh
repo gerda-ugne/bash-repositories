@@ -84,11 +84,59 @@ case $option in
 			then
 				{
 				echo -e "File found! Navigating.\n"
-				nano $filename
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
-				}
+	       
+				touch $filename.copy
+				cp $filename $copyoffile
+				case $checkOption in
+
+		                1 ) echo "1. Open"
+				more $filename.copy
+				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $($) @ $(date +%T)] File opened out: $filename" >> logfile.txt 
+
+               			 ;;
+               			 2 ) echo "2. Edit"
+				nano  $filename.copy
+
+				if cmp --silent --"$filename" "$filename.copy"; then
+				echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $($) @ $(date + %T)] File edited: $filename" >> logfile.txt
+                		fi
+				;;
+
+
+               			 3 ) echo -e "3. Check in\n"
+				echo diff $filename $filename.copy
+				echo -e "Do you want to commit the changes?\n"
+				select confirmation in YES NO
+				do
+				YES ) cp $copyoffile $filename
+				echo "Changes committed."
+				;;
+				NO ) echo "Changes unconfirmed." 
+				;;
+                		done
+
+				0 ) echo "Returning."
+				;;
+				
+				* ) echo "Incorrect input"
+
+		if [ diff $copyoffile $filename -eq  ];then
+		{
+			echo "You have unsaved changes. They will be discarded if you leave. Are you sure you want to leave? "
+			select confirmation in YES NO
+			do
+			YES	) rm $filename.copy return 0
+			NO	) continue
+			done
+		}
+		fi
+               ;;
+		* ) echo "Invalid input.";
+
+		esac
 			else echo "File not found"
-			fi
+		fi
 		;;
 		3 ) echo -e  "Showing the contents..\n"
 			ls -l
