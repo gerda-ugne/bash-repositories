@@ -92,6 +92,9 @@ case $option in
 				cp $filename $filename.copy
 				cp logfile.txt uncommittedlog.txt
 				
+				checkOption=null
+				
+				until [ checkOption = 0 ]; do
 				
 				case $checkOption in
 
@@ -134,8 +137,7 @@ case $option in
 
 					0 ) echo "Returning."
 				
-					if cmp --silent --"$filename" "$filename.copy"; then
-					{
+					if cmp --silent --"$filename" "$filename.copy"; then {
 				
 					confirmation = NULL
 					until[ $confirmation = YES || $confirmation = NO]; do
@@ -151,6 +153,7 @@ case $option in
 					
 					esac
 					done
+					}
 					
 					fi
 		       			;;
@@ -159,10 +162,11 @@ case $option in
 					* ) echo "Incorrect input"
 				
 				esac
+				done
+				}
 
-		esac
-		else echo "File not found"
-		fi
+			else echo "File not found"
+			fi
 	
 		;;
 		3 ) echo -e  "Showing the contents..\n"
