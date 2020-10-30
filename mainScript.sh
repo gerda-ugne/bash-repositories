@@ -94,7 +94,7 @@ case $option in
 				
 				checkOption=null
 				
-				until [ checkOption = 0 ]; do
+				until [ checkOption -eq 0 ]; do
 				
 				case $checkOption in
 
