@@ -87,56 +87,83 @@ case $option in
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
 	       
 				touch $filename.copy
-				cp $filename $copyoffile
+				touch uncommited.log
+				
+				cp $filename $filename.copy
+				cp logfile.txt uncommittedlog.txt
+				
+				
 				case $checkOption in
 
-		                1 ) echo "1. Open"
-				more $filename.copy
-				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $($) @ $(date +%T)] File opened out: $filename" >> logfile.txt 
+		                	1 ) echo "1. Open"
+					more $filename.copy
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $($) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
 
-               			 ;;
-               			 2 ) echo "2. Edit"
-				nano  $filename.copy
+               			 	;;
+				 
+               			 	2 ) echo "2. Edit"
+					nano  $filename.copy
 
-				if cmp --silent --"$filename" "$filename.copy"; then
-				echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $($) @ $(date + %T)] File edited: $filename" >> logfile.txt
-                		fi
-				;;
+					if cmp --silent --"$filename" "$filename.copy"; then
+					echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $($) @ $(date + %T)] File edited: $filename" >> uncommittedlog.txt
+                			fi
+					;;
 
 
-               			 3 ) echo -e "3. Check in\n"
-				echo diff $filename $filename.copy
-				echo -e "Do you want to commit the changes?\n"
-				select confirmation in YES NO
-				do
-				YES ) cp $copyoffile $filename
-				echo "Changes committed."
-				;;
-				NO ) echo "Changes unconfirmed." 
-				;;
-                		done
+               				3 ) echo -e "3. Check in\n"
+					echo diff $filename $filename.copy
+					
+					confirmation=NULL
+					until [ $confirmation = YES || $confirmation = NO ]; do
+					
+					echo -e "Do you want to commit the changes (y\n)?\n"
+					case $confirmation in
+					
+						y ) cp $copyoffile $filename
+							cp uncommitedlog.txt logfile.txt
+							
+							echo "Changes committed."
+							
+						;;
+						n ) echo "Changes unconfirmed." 
+						;;
+						* ) echo "Incorrect input"
+					esac
+					done
+					;;
 
-				0 ) echo "Returning."
-				;;
+					0 ) echo "Returning."
 				
-				* ) echo "Incorrect input"
-
-		if [ diff $copyoffile $filename -eq  ];then
-		{
-			echo "You have unsaved changes. They will be discarded if you leave. Are you sure you want to leave? "
-			select confirmation in YES NO
-			do
-			YES	) rm $filename.copy return 0
-			NO	) continue
-			done
-		}
-		fi
-               ;;
-		* ) echo "Invalid input.";
+					if cmp --silent --"$filename" "$filename.copy"; then
+					{
+				
+					confirmation = NULL
+					until[ $confirmation = YES || $confirmation = NO]; do
+					
+					echo "You have unsaved changes. They will be discarded if you leave. Are you sure you want to leave?(y/n) "
+					
+					case $confirmation in
+					y )	echo "Confirmed - leaving unsaved.
+					;;
+					n )	continue
+					;;
+					*)	echo "Invalid input."
+					
+					esac
+					done
+					
+					fi
+		       			;;
+					
+				
+					* ) echo "Incorrect input"
+				
+				esac
 
 		esac
-			else echo "File not found"
+		else echo "File not found"
 		fi
+	
 		;;
 		3 ) echo -e  "Showing the contents..\n"
 			ls -l
