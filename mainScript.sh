@@ -92,7 +92,7 @@ case $option in
 				cp $filename $filename.copy
 				cp logfile.txt uncommittedlog.txt
 				
-				checkOption=null
+				checkOption=-1
 				
 				until [ checkOption -eq 0 ]; do
 				
@@ -140,12 +140,12 @@ case $option in
 					if cmp --silent --"$filename" "$filename.copy"; then {
 				
 					confirmation = NULL
-					until[ $confirmation = YES || $confirmation = NO]; do
+					until [ $confirmation = YES || $confirmation = NO ]; do
 					
 					echo "You have unsaved changes. They will be discarded if you leave. Are you sure you want to leave?(y/n) "
 					
 					case $confirmation in
-					y )	echo "Confirmed - leaving unsaved.
+					y )	echo "Confirmed - leaving unsaved."
 					;;
 					n )	continue
 					;;
