@@ -95,6 +95,8 @@ case $option in
 				checkOption=-1
 				until [ "$checkOption" -eq 0 ]; do
 				
+				read -p "Choose an option: " checkOption
+				
 				case $checkOption in
 
 		                	1 ) echo "1. Open"
