@@ -117,7 +117,7 @@ case $option in
 					echo diff $filename $filename.copy
 					
 					confirmation=NULL
-					until [ $confirmation = YES || $confirmation = NO ]; do
+					until [ $confirmation = y || $confirmation = n ]; do
 					
 					echo -e "Do you want to commit the changes (y\n)?\n"
 					case $confirmation in
@@ -140,7 +140,7 @@ case $option in
 					if cmp --silent --"$filename" "$filename.copy"; then {
 				
 					confirmation = NULL
-					until [ $confirmation = YES || $confirmation = NO ]; do
+					until [ $confirmation = y || $confirmation = n ]; do
 					
 					echo "You have unsaved changes. They will be discarded if you leave. Are you sure you want to leave?(y/n) "
 					
