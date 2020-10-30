@@ -95,6 +95,13 @@ case $option in
 				checkOption=-1
 				until [ "$checkOption" -eq 0 ]; do
 				
+				echo
+				echo "1. Open the file"
+				echo "2. Edit the file"
+				echo "3. Check-in"
+				echo "0. Return"
+				echo
+				
 				read -p "Choose an option: " checkOption
 				
 				case $checkOption in
@@ -117,10 +124,10 @@ case $option in
                				3 ) echo -e "3. Check in\n"
 					echo diff $filename $filename.copy
 					
-					confirmation=NULL
+					confirmation=null
 					until [ $confirmation = y || $confirmation = n ]; do
-					
-					echo -e "Do you want to commit the changes (y\n)?\n"
+				
+					read -p "Do you want to commit the changes (y\n?)" confirmation
 					case $confirmation in
 					
 						y ) cp $copyoffile $filename
@@ -140,11 +147,10 @@ case $option in
 				
 					if cmp --silent --"$filename" "$filename.copy"; then {
 				
-					confirmation = NULL
+					confirmation = null
 					until [ $confirmation = y || $confirmation = n ]; do
 					
-					echo "You have unsaved changes. They will be discarded if you leave. Are you sure you want to leave?(y/n) "
-					
+					read -p "Do you want to commit the changes (y\n?)" confirmation
 					case $confirmation in
 					y )	echo "Confirmed - leaving unsaved."
 					;;
