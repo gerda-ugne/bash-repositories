@@ -28,7 +28,7 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir $newrep
-			cd $newrep; touch logfile.txt; 
+			cd $newrep; touch logfile.txt; mkdir backup-files;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd ..
 			echo "You have successfully created a repository named $newrep"
@@ -72,6 +72,7 @@ case $option in
 				echo -e "There is already a file in the repository named $newfile\n"
 			else
 				touch $newfile
+				mkdir backup-files/"$newfile-copies"
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
 			fi
@@ -128,10 +129,10 @@ case $option in
 					read -p "Do you want to commit the changes (y\n?)" confirmation
 					case $confirmation in
 					
-						y ) cp $filename.copy $filename
+						y ) cp $filename backup-files/"$filename-copies"/"$filename-$(date +%T)"
+							cp $filename.copy $filename
 							cp uncommittedlog.txt logfile.txt
-							rm filename.copy
-							rm uncommittedlog.txt
+							echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $(date + %T)] File checked in: $filename" >> logfile.txt
 
 							echo "Changes committed."
 							
@@ -144,7 +145,7 @@ case $option in
 					;;
 
 					0 ) echo "Returning."
-				
+
 					if cmp --silent --"$filename" "$filename.copy"; then {
 				
 					confirmation = null
@@ -163,6 +164,8 @@ case $option in
 					}
 					
 					fi
+					rm $filename.copy
+					rm uncommittedlog.txt
 		       			;;
 					
 				
@@ -188,8 +191,64 @@ case $option in
 
 		;;
 		6 ) echo "Rollback to a previous version"
+		
 
-		echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Version rolled back." >> logfile.txt
+			filename=null
+			read -p "Enter the name of the file you wish to rollback:   " filename
+			if [ -f $filename ]
+			then
+				{
+					cd backup-files/"$filename-copies"
+					option=-1
+					until [ "$option" -eq 0 ]; do
+					{
+						ls -l
+						echo "1. See differences between files"
+						echo "2. Choose version to rollback"
+						echo "0. Exit"
+
+						read -p "Choose an option: " option
+						case $option in
+						1 )	diffFileName=null
+							read -p "Enter the name of file to compare:   " diffFileName
+							if [ -f $diffFileName ] 
+							then
+								{
+									diff ../../"$filename" $diffFileName
+								}
+							else 
+								echo "File not found."
+							fi
+						;;
+						2 )	versionName=null
+							read -p "Enter the version file name:   " versionName
+							if [ -f $versionName ] 
+							then
+								{
+									cp $versionName ../../"$filename"
+									echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File version rolled back: $filename" >> ../../logfile.txt
+									echo "Version successfully rolled back!"
+								}
+							else 
+								echo "File not found."
+							fi
+						;;
+						0 )	continue
+						;;
+						*)	echo "Invalid input."
+						
+						esac
+					}
+					done
+
+					cd ..
+					cd ..
+				}
+			else
+				{
+					echo "File not found."
+				}
+			fi
 		;;
 		7 ) echo "Archive management"
 		;;
