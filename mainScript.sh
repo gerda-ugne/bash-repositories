@@ -28,7 +28,7 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir $newrep
-			cd $newrep; touch logfile.txt; mkdir backup-files;
+			cd $newrep; touch logfile.txt; mkdir .backup-files;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd ..
 			echo "You have successfully created a repository named $newrep"
@@ -72,7 +72,7 @@ case $option in
 				echo -e "There is already a file in the repository named $newfile\n"
 			else
 				touch $newfile
-				mkdir backup-files/"$newfile-copies"
+				mkdir .backup-files/"$newfile-copies"
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
 			fi
@@ -117,30 +117,30 @@ case $option in
 					nano  $filename.copy
 
 					if cmp --silent --"$filename" "$filename.copy"; then
-					echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $(date + %T)] File edited: $filename" >> uncommittedlog.txt
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
                 			fi
 					;;
 
 
                				3 ) echo -e "3. Check in\n"
 					diff $filename $filename.copy
-					confirmation=NULL
-					until [[ "$confirmation" == "y" || "$confirmation" == "n" ]]; do
-					read -p "Do you want to commit the changes (y\n?)" confirmation
-					case $confirmation in
-					
-						y ) cp $filename backup-files/"$filename-copies"/"$filename-$(date +%T)"
-							cp $filename.copy $filename
-							cp uncommittedlog.txt logfile.txt
-							echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $(date + %T)] File checked in: $filename" >> logfile.txt
 
-							echo "Changes committed."
-							
-						;;
-						n ) echo "Changes unconfirmed." 
-						;;
-						* ) echo "Incorrect input"
-					esac
+					confirmation=NULL
+
+					until [[ "$confirmation" == "y" || "$confirmation" == "n" ]]; do
+						read -p "Do you want to commit the changes (y\n?)" confirmation
+						case $confirmation in
+							y ) echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename" >> uncommittedlog.txt
+								cp $filename .backup-files/"$filename-copies"/"$filename-$(date +%T)"
+								cp $filename.copy $filename
+								cp uncommittedlog.txt logfile.txt
+
+								echo "Changes committed."
+							;;
+							n ) echo "Changes unconfirmed." 
+							;;
+							* ) echo "Incorrect input"
+						esac
 					done
 					;;
 
@@ -158,7 +158,6 @@ case $option in
 					n )	continue
 					;;
 					*)	echo "Invalid input."
-					
 					esac
 					done
 					}
@@ -168,7 +167,6 @@ case $option in
 					rm uncommittedlog.txt
 		       			;;
 					
-				
 					* ) echo "Incorrect input"
 				
 				esac
@@ -198,7 +196,7 @@ case $option in
 			if [ -f $filename ]
 			then
 				{
-					cd backup-files/"$filename-copies"
+					cd .backup-files/"$filename-copies"
 					option=-1
 					until [ "$option" -eq 0 ]; do
 					{
@@ -236,7 +234,6 @@ case $option in
 						0 )	continue
 						;;
 						*)	echo "Invalid input."
-						
 						esac
 					}
 					done
