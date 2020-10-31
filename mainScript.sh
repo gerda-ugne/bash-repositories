@@ -87,7 +87,7 @@ case $option in
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
 	       
 				touch $filename.copy
-				touch uncommited.log
+				touch uncommittedlog.txt
 				
 				cp $filename $filename.copy
 				cp logfile.txt uncommittedlog.txt
@@ -108,7 +108,7 @@ case $option in
 
 		                	1 ) echo "1. Open"
 					more $filename.copy
-					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $($) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
 
                			 	;;
 				 
@@ -116,23 +116,23 @@ case $option in
 					nano  $filename.copy
 
 					if cmp --silent --"$filename" "$filename.copy"; then
-					echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $($) @ $(date + %T)] File edited: $filename" >> uncommittedlog.txt
+					echo "[$(date + %d)/$(date + %m)/%(date + %Y) @ $(date + %T)] File edited: $filename" >> uncommittedlog.txt
                 			fi
 					;;
 
 
                				3 ) echo -e "3. Check in\n"
-					echo diff $filename $filename.copy
-					
-					confirmation=null
-					until [ $confirmation = y || $confirmation = n ]; do
-				
+					diff $filename $filename.copy
+					confirmation=NULL
+					until [[ "$confirmation" == "y" || "$confirmation" == "n" ]]; do
 					read -p "Do you want to commit the changes (y\n?)" confirmation
 					case $confirmation in
 					
-						y ) cp $copyoffile $filename
-							cp uncommitedlog.txt logfile.txt
-							
+						y ) cp $filename.copy $filename
+							cp uncommittedlog.txt logfile.txt
+							rm filename.copy
+							rm uncommittedlog.txt
+
 							echo "Changes committed."
 							
 						;;
