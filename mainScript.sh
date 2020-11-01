@@ -8,8 +8,6 @@ until [ "$option" -eq 0 ]; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
-echo "3. Option 3"
-echo "4. Option 4"
 echo -e  "0. Exit\n"
 
 read -p "Choose an option: " option
@@ -28,7 +26,7 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir $newrep
-			cd $newrep; touch logfile.txt; 
+			cd $newrep; touch logfile.txt; mkdir .backup-files;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd ..
 			echo "You have successfully created a repository named $newrep"
@@ -72,6 +70,7 @@ case $option in
 				echo -e "There is already a file in the repository named $newfile\n"
 			else
 				touch $newfile
+				mkdir .backup-files/"$newfile-copies"
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
 			fi
@@ -84,11 +83,97 @@ case $option in
 			then
 				{
 				echo -e "File found! Navigating.\n"
-				nano $filename
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
+	       
+				touch $filename.copy
+				touch uncommittedlog.txt
+				
+				cp $filename $filename.copy
+				cp logfile.txt uncommittedlog.txt
+				
+				checkOption=-1
+				until [ "$checkOption" -eq 0 ]; do
+				
+				echo
+				echo "1. Open the file"
+				echo "2. Edit the file"
+				echo "3. Check-in"
+				echo "0. Return"
+				echo
+				
+				read -p "Choose an option: " checkOption
+				
+				case $checkOption in
+
+		                	1 ) echo "1. Open"
+					more $filename.copy
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
+
+               			 	;;
+				 
+               			 	2 ) echo "2. Edit"
+					nano  $filename.copy
+
+					if cmp --silent --"$filename" "$filename.copy"; then
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
+                			fi
+					;;
+
+
+               				3 ) echo -e "3. Check in\n"
+					diff $filename $filename.copy
+
+					confirmation=NULL
+
+					until [[ "$confirmation" == "y" || "$confirmation" == "n" ]]; do
+						read -p "Do you want to commit the changes (y\n?)" confirmation
+						case $confirmation in
+							y ) echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename" >> uncommittedlog.txt
+								cp $filename .backup-files/"$filename-copies"/"$filename-$(date +%T)"
+								cp $filename.copy $filename
+								cp uncommittedlog.txt logfile.txt
+
+								echo "Changes committed."
+							;;
+							n ) echo "Changes unconfirmed." 
+							;;
+							* ) echo "Incorrect input"
+						esac
+					done
+					;;
+
+					0 ) echo "Returning."
+
+					if cmp --silent --"$filename" "$filename.copy"; then {
+				
+					confirmation = null
+					until [ $confirmation = y || $confirmation = n ]; do
+					
+					read -p "Do you want to commit the changes (y\n?)" confirmation
+					case $confirmation in
+					y )	echo "Confirmed - leaving unsaved."
+					;;
+					n )	continue
+					;;
+					*)	echo "Invalid input."
+					esac
+					done
+					}
+					
+					fi
+					rm $filename.copy
+					rm uncommittedlog.txt
+		       			;;
+					
+					* ) echo "Incorrect input"
+				
+				esac
+				done
 				}
+
 			else echo "File not found"
 			fi
+	
 		;;
 		3 ) echo -e  "Showing the contents..\n"
 			ls -l
@@ -99,14 +184,149 @@ case $option in
 			cat logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
-
+		
+		./configure
+		make
+		make install
+		
 		;;
 		6 ) echo "Rollback to a previous version"
+		
 
-		echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Version rolled back." >> logfile.txt
+			filename=null
+			read -p "Enter the name of the file you wish to rollback:   " filename
+			if [ -f $filename ]
+			then
+				{
+					cd .backup-files/"$filename-copies"
+					option=-1
+					until [ "$option" -eq 0 ]; do
+					{
+						ls -l
+						echo "1. See differences between files"
+						echo "2. Choose version to rollback"
+						echo "0. Exit"
+
+						read -p "Choose an option: " option
+						case $option in
+						1 )	diffFileName=null
+							read -p "Enter the name of file to compare:   " diffFileName
+							if [ -f $diffFileName ] 
+							then
+								{
+									diff ../../"$filename" $diffFileName
+								}
+							else 
+								echo "File not found."
+							fi
+						;;
+						2 )	versionName=null
+							read -p "Enter the version file name:   " versionName
+							if [ -f $versionName ] 
+							then
+								{
+									cp $versionName ../../"$filename"
+									echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File version rolled back: $filename" >> ../../logfile.txt
+									echo "Version successfully rolled back!"
+								}
+							else 
+								echo "File not found."
+							fi
+						;;
+						0 )	continue
+						;;
+						*)	echo "Invalid input."
+						esac
+					}
+					done
+
+					cd ..
+					cd ..
+				}
+			else
+				{
+					echo "File not found."
+				}
+			fi
 		;;
 		7 ) echo "Archive management"
-		;;
+			
+				checkOption=-1
+			
+				until [ "$checkOption" -eq 0 ]; do
+				
+				echo
+				echo "1. Archive the project into .zip"
+				echo "2. Access the latest archive"
+				echo "0. Return"
+				echo
+				
+				read -p "Choose an option: " checkOption
+				
+				case $checkOption in
+				
+				1 ) echo -e "\nArchiving the project..."
+				zip -r archive_$repname.zip ../$repname
+				echo "Repository archived successfully!"
+				
+				;;
+				
+				2 ) echo -e "\nAccessing the latest archive..."
+				
+				if [ -d "$archive_$repname.zip" ]; then
+				unzip -d arhived/archive_$repname.zip 
+				cd archived
+				
+				echo -e "List of files in the archive: \n"
+				ls -l
+				
+				input=-1
+				
+				until [ "$input" -eq 0 ]; do
+				
+					echo "1. Preview a file"
+					echo "0. Return"
+				
+					case $input in
+				
+					1)	files=$(ls *.txt)
+						i=1
+
+						for j in $files
+						do
+						echo "$i.$j"
+						file[i]=$j
+						i=$(( i + 1 ))
+						done
+					
+						read -p "Choose which file to preview:"
+						echo "You're previewing file ${file[$input]}"
+					
+						more ${file[$input]}
+				
+						else
+					echo "No previous archive found."
+					fi
+					;;
+					
+					0) echo "Return"
+					continue
+					;;
+					
+					*) echo "Invalid input."
+					
+					esac
+				done
+					
+				0 ) echo "Return"
+				    cd ..
+				    continue
+				    ;;
+				* ) echo "Invalid input."
+				esac
+				done
+			
+					;;
 		0 ) echo "Return"
 		;;
 		* ) echo "Invalid input. Please try again."
@@ -119,10 +339,7 @@ case $option in
 
 		fi
 	    ;;
-	3 ) echo "3"
-	    ;;
-	4 ) echo "4"
-	    ;;
+
 	0 ) echo "Thank you for using the system! Exiting now."
 	    ;;
 
