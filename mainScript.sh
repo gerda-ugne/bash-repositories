@@ -128,7 +128,21 @@ case $option in
 					until [[ "$confirmation" == "y" || "$confirmation" == "n" ]]; do
 						read -p "Do you want to commit the changes (y\n?)" confirmation
 						case $confirmation in
-							y ) echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename" >> uncommittedlog.txt
+							y ) 
+								choice=NULL
+								until [[ "$choice" == "y" || "$choice" == "n" ]]; do
+									comment=""
+									read -p "Do you want to leave a comment (y\n?)" choice
+									case $choice in
+										y ) 
+											read -p "Write comment: " choice
+											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename\n User comment: $comment" >> uncommittedlog.txt
+										;;
+										n ) echo "Comment left blank"
+											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename" >> uncommittedlog.txt
+										;;
+										* ) echo "Incorrect input"
+									esac
 								cp $filename .backup-files/"$filename-copies"/"$filename-$(date +%T)"
 								cp $filename.copy $filename
 								cp uncommittedlog.txt logfile.txt
