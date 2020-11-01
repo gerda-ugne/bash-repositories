@@ -248,7 +248,83 @@ case $option in
 			fi
 		;;
 		7 ) echo "Archive management"
-		;;
+			
+				checkOption=-1
+			
+				until [ "$checkOption" -eq 0 ]; do
+				
+				echo
+				echo "1. Archive the project into .zip"
+				echo "2. Access the latest archive"
+				echo "0. Return"
+				echo
+				
+				read -p "Choose an option: " checkOption
+				
+				case $checkOption in
+				
+				1 ) echo -e "\nArchiving the project..."
+				zip -r archive_$repname.zip ../$repname
+				echo "Repository archived successfully!"
+				
+				;;
+				
+				2 ) echo -e "\nAccessing the latest archive..."
+				
+				if [ -d "$archive_$repname.zip" ]; then
+				unzip -d arhived/archive_$repname.zip 
+				cd archived
+				
+				echo -e "List of files in the archive: \n"
+				ls -l
+				
+				input=-1
+				
+				until [ "$input" -eq 0 ]; do
+				
+					echo "1. Preview a file"
+					echo "0. Return"
+				
+					case $input in
+				
+					1)	files=$(ls *.txt)
+						i=1
+
+						for j in $files
+						do
+						echo "$i.$j"
+						file[i]=$j
+						i=$(( i + 1 ))
+						done
+					
+						read -p "Choose which file to preview:"
+						echo "You're previewing file ${file[$input]}"
+					
+						more ${file[$input]}
+				
+						else
+					echo "No previous archive found."
+					fi
+					;;
+					
+					0) echo "Return"
+					continue
+					;;
+					
+					*) echo "Invalid input."
+					
+					esac
+				done
+					
+				0 ) echo "Return"
+				    cd ..
+				    continue
+				    ;;
+				* ) echo "Invalid input."
+				esac
+				done
+			
+					;;
 		0 ) echo "Return"
 		;;
 		* ) echo "Invalid input. Please try again."
