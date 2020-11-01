@@ -8,8 +8,6 @@ until [ "$option" -eq 0 ]; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
-echo "3. Option 3"
-echo "4. Option 4"
 echo -e  "0. Exit\n"
 
 read -p "Choose an option: " option
@@ -186,7 +184,11 @@ case $option in
 			cat logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
-
+		
+		./configure
+		make
+		make install
+		
 		;;
 		6 ) echo "Rollback to a previous version"
 		
@@ -337,10 +339,7 @@ case $option in
 
 		fi
 	    ;;
-	3 ) echo "3"
-	    ;;
-	4 ) echo "4"
-	    ;;
+
 	0 ) echo "Thank you for using the system! Exiting now."
 	    ;;
 
