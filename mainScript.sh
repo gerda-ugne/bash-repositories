@@ -158,7 +158,7 @@ case $option in
 										* ) echo "Incorrect input"
 									esac
 								done
-								cp "$filename" .backup-files/"""$filename""-copies"/"$filename-$(date +%T)"
+								cp "$filename" .backup-files/ "$filename-copies/$filename-$(date +%T)"
 								cp "$filename.copy" "$filename"
 								cp "uncommittedlog.txt" "logfile.txt"
 
@@ -215,9 +215,21 @@ case $option in
 		;;
 		5 ) echo "Compile the project using its source code"
 		
-		configure
-		make
-		make install
+		echo -e "\nLooking for a source file.."
+		
+		if locate -c "*.tar.gz" -eq 0; then
+		echo "No tar with a .tar.gz extension file. Unable to proceed."
+		
+		elif locate -c "*.tar.gz" -eq 1; then
+		
+		source=$(locate "*.tar.gz")
+		tar -zxvf ./*glob**tar.gz
+		cd "$source" || exit
+		
+		./configure
+		sudo make
+		
+		fi
 		
 		;;
 		6 ) echo "Rollback to a previous version"
@@ -296,7 +308,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				zip -r archive_"$repname".zip ../"$repname"
+				zip -r "archive_$repname.zip ../$repname"
 				echo "Repository archived successfully!"
 				
 				;;
@@ -304,7 +316,8 @@ case $option in
 				2 ) echo -e "\nAccessing the latest archive..."
 				
 				if [ -d "archive_$repname.zip" ]; then
-				unzip -d arhived/archive_"$repname".zip 
+				
+				unzip -d "archived/archive_$repname".zip 
 				cd archived || return
 				
 				echo -e "List of files in the archive: \n"
