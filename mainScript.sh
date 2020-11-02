@@ -125,12 +125,12 @@ case $option in
 
 					confirmation=NULL
 
-					until [[ "$confirmation" == "y" || "$confirmation" == "n" ]]; do
+					until [[ "$confirmation"=="y" || "$confirmation"=="n" ]]; do
 						read -p "Do you want to commit the changes (y\n?)" confirmation
 						case $confirmation in
 							y ) 
 								choice=NULL
-								until [[ "$choice" == "y" || "$choice" == "n" ]]; do
+								until [[ "$choice"=="y" || "$choice"=="n" ]]; do
 									comment=""
 									read -p "Do you want to leave a comment (y\n?)" choice
 									case $choice in
