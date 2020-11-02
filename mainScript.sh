@@ -10,7 +10,7 @@ echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
 echo -e  "0. Exit\n"
 
-read -p -r "Choose an option: " option
+read -r -p "Choose an option: " option
 
 
 case $option in
