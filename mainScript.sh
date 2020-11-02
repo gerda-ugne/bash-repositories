@@ -105,22 +105,34 @@ case $option in
 				
 				case $checkOption in
 
-		                	1 ) echo "1. Open"
+		                	1 ) echo -e "Opening the file...\n"
+					
+					if [ -s "$filename.copy" ]; then
+					echo "The file is empty."
+					
+					else
+					
 					more "$filename.copy"
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
-
+					
+					fi
                			 	;;
 				 
-               			 	2 ) echo "2. Edit"
+               			 	2 ) echo "Opening external editor... \n"
 					nano  "$filename.copy"
 
 					if cmp --silent --"$filename" "$filename.copy"; then
+					
+					echo "Changes recorded succesfully."
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
                 			fi
 					;;
 
 
-               				3 ) echo -e "3. Check in\n"
+               				3 ) echo -e "Checking in...\n"
+					
+					echo -e "Commiting changes:\n"
+					
 					diff "$filename" "$filename.copy"
 
 					confirmation=NULL
@@ -135,7 +147,7 @@ case $option in
 									read -r -p "Do you want to leave a comment (y\n?)" choice
 									case $choice in
 										y ) 
-											read -r -p "Write comment: " choice
+											read -r -p "Write a comment: " comment
 											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename\n User comment: $comment" >> uncommittedlog.txt
 										;;
 										n ) echo "Comment left blank"
@@ -168,7 +180,8 @@ case $option in
 					case $confirmation in
 					y )	echo "Confirmed - leaving unsaved."
 					;;
-					n )	continue
+					n )	checkOption=-1
+						continue
 					;;
 					*)	echo "Invalid input."
 					esac
@@ -176,7 +189,7 @@ case $option in
 					}
 					
 					fi
-					rm "$filename".copy
+					rm "$filename.copy"
 					rm uncommittedlog.txt
 		       			;;
 					
@@ -196,11 +209,11 @@ case $option in
 		;;
 		4 ) echo "View the log file"
 			echo
-			cat logfile.txt
+			more logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
 		
-		./configure
+		configure
 		make
 		make install
 		
