@@ -108,12 +108,13 @@ case $option in
 		                	1 ) echo -e "Opening the file...\n"
 					
 					if [ -s "$filename.copy" ]; then
-					echo "The file is empty."
-					
-					else
 					
 					more "$filename.copy"
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
+					
+					
+					else
+					echo "The file is empty."
 					
 					fi
                			 	;;
@@ -121,7 +122,7 @@ case $option in
                			 	2 ) echo "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					if [ cmp --silent --"$filename" "$filename.copy" ]; then
+					if [ cmp --silent "$filename" "$filename.copy" ]; then
 					
 					echo "Changes recorded succesfully."
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
