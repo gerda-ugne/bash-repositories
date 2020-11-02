@@ -314,7 +314,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				zip -r "archive_$repname.zip ../$repname"
+				zip -r "archive_$repname.zip "../$repname"
 				echo "Repository archived successfully!"
 				
 				;;
