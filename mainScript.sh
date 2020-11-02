@@ -110,7 +110,7 @@ case $option in
 					if [ -s "$filename.copy" ]; then
 					
 					more "$filename.copy"
-					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened: $filename" >> uncommittedlog.txt
 					
 					
 					else
@@ -122,7 +122,7 @@ case $option in
                			 	2 ) echo -e "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					if cmp -s "$filename" "$filename.copy" ; then
+					if [ cmp -s "$filename" "$filename.copy" -eq 1 ]; then
 					
 					echo "Changes recorded succesfully."
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
