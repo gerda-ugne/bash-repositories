@@ -20,7 +20,7 @@ case $option in
 		while true
 		do
 
-		read -p -r "Enter a new name for your repository: " newrep
+		read -r -p "Enter a new name for your repository: " newrep
 		if [ -d "$newrep" ]; then
 
 		echo -e "There is already a repository with the given name. Please try again. \n"
@@ -38,7 +38,7 @@ case $option in
 	2 ) echo "2.Accessing a repository..."
 
 		repname=null
-		read -p -r "Enter the name of the repository you wish to access...:   " repname
+		read -r -p "Enter the name of the repository you wish to access...:   " repname
 		if [ -d "$repname" ]; then
 		echo -e "Repository found! Navigating.\n"
 		cd "$repname" || return
@@ -58,14 +58,14 @@ case $option in
 		echo "7. Archive management"
 		echo "0. Return"
 
-		read -p -r "Enter your option: " accessOption
+		read -r -p "Enter your option: " accessOption
 
 		case $accessOption in
 		
 		1 ) echo "Add files to the repository"
 		
 			newfile=null
-			read -p -r "Name the file you wish to add: " newfile
+			read -r -p "Name the file you wish to add: " newfile
 			if [ -f "$newfile" ]; then
 				echo -e "There is already a file in the repository named $newfile\n"
 			else
@@ -78,7 +78,7 @@ case $option in
 		;;
 		2 ) echo "Check out a file"
 			filename=null
-			read -p -r "Enter the name of the file you wish to check out:   " filename
+			read -r -p "Enter the name of the file you wish to check out:   " filename
 			if [ -f "$filename" ]
 			then
 				{
@@ -101,7 +101,7 @@ case $option in
 				echo "0. Return"
 				echo
 				
-				read -p -r "Choose an option: " checkOption
+				read -r -p "Choose an option: " checkOption
 				
 				case $checkOption in
 
@@ -126,16 +126,16 @@ case $option in
 					confirmation=NULL
 
 					until [ "$confirmation" == "y" ] || [ "$confirmation" == "n" ]; do
-						read -p -r "Do you want to commit the changes (y\n?)" confirmation
+						read -r -p "Do you want to commit the changes (y\n?)" confirmation
 						case $confirmation in
 							y ) 
 								choice=NULL
 								until [ "$choice" == "y" ] || [ "$choice" == "n" ]; do
 									comment=""
-									read -p -r "Do you want to leave a comment (y\n?)" choice
+									read -r -p "Do you want to leave a comment (y\n?)" choice
 									case $choice in
 										y ) 
-											read -p -r "Write comment: " choice
+											read -r -p "Write comment: " choice
 											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename\n User comment: $comment" >> uncommittedlog.txt
 										;;
 										n ) echo "Comment left blank"
@@ -164,7 +164,7 @@ case $option in
 					confirmation=null
 					until [ $confirmation = y ] || [ $confirmation = n ]; do
 					
-					read -p -r "Do you want to commit the changes (y\n?)" confirmation
+					read -r -p "Do you want to commit the changes (y\n?)" confirmation
 					case $confirmation in
 					y )	echo "Confirmed - leaving unsaved."
 					;;
@@ -209,7 +209,7 @@ case $option in
 		
 
 			filename=null
-			read -p -r "Enter the name of the file you wish to rollback:   " filename
+			read -r -p "Enter the name of the file you wish to rollback:   " filename
 			if [ -f "$filename" ]
 			then
 				{
@@ -222,10 +222,10 @@ case $option in
 						echo "2. Choose version to rollback"
 						echo "0. Exit"
 
-						read -p -r "Choose an option: " option
+						read -r -p "Choose an option: " option
 						case $option in
 						1 )	diffFileName=null
-							read -p -r "Enter the name of file to compare:   " diffFileName
+							read -r -p "Enter the name of file to compare:   " diffFileName
 							if [ -f "$diffFileName" ] 
 							then
 								{
@@ -236,7 +236,7 @@ case $option in
 							fi
 						;;
 						2 )	versionName=null
-							read -p -r "Enter the version file name:   " versionName
+							read -r -p "Enter the version file name:   " versionName
 							if [ -f "$versionName" ] 
 							then
 								{
@@ -276,7 +276,7 @@ case $option in
 				echo "0. Return"
 				echo
 				
-				read -p -r "Choose an option: " checkOption
+				read -r -p "Choose an option: " checkOption
 				
 				case $checkOption in
 				
@@ -302,7 +302,7 @@ case $option in
 					echo "1. Preview a file"
 					echo "0. Return"
 				        
-				        read -p -r "Choose an option:" miniinput
+				        read -r -p "Choose an option:" miniinput
 					case $miniinput in
 				
 					1 )     files=$(ls -- *glob*.txt)
@@ -315,7 +315,7 @@ case $option in
 						i=$(( i + 1 ))
 						done
 					
-						read -p -r "Choose which file to preview:"
+						read -r -p "Choose which file to preview:"
 						echo "You're previewing file ${file[$input]}"
 					
 						more "${file[$input]}"
