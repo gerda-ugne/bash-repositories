@@ -217,10 +217,12 @@ case $option in
 		
 		echo -e "\nLooking for a source file.."
 		
-		if locate -c "*.tar.gz" -eq 0; then
+		sourceExists=$(locate -c "*.tar.gz")
+		
+		if [ "$sourceExists" -eq 0 ] ; then
 		echo "No tar with a .tar.gz extension file. Unable to proceed."
 		
-		elif locate -c "*.tar.gz" -eq 1; then
+		elif [ "$sourceExists" -eq 1 ] ; then
 		
 		source=$(locate "*.tar.gz")
 		tar -zxvf ./*glob**tar.gz
