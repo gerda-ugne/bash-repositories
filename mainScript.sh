@@ -229,6 +229,10 @@ case $option in
 		./configure
 		sudo make
 		
+		el
+		
+		echo "There are more than one source files. Please keep only one."
+		
 		fi
 		
 		;;
