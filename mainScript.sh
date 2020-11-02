@@ -122,8 +122,9 @@ case $option in
                			 	2 ) echo -e "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					if [ cmp -s "$filename" "$filename.copy" -eq 1 ]; then
-					
+					if cmp -s "$filename" "$filename.copy"]; then
+					true
+					else
 					echo "Changes recorded succesfully."
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
                 			fi
