@@ -356,7 +356,8 @@ case $option in
 				
 						
 					;;
-					0) echo "Returning."					
+					0) echo "Returning."	
+					cd ..
 					continue
 					;;
 					
