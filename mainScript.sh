@@ -321,7 +321,7 @@ case $option in
 				
 				2 ) echo -e "\nAccessing the latest archive..."
 				
-				if [ -d "archive_$repname.zip" ]; then
+				if [ -f "archive_$repname.zip" ]; then
 				
 				unzip -d "archived/archive_$repname".zip 
 				cd archived || return
