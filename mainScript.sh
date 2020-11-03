@@ -10,25 +10,25 @@ echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
 echo -e  "0. Exit\n"
 
-read -p "Choose an option: " option
+read -r -p "Choose an option: " option
 
 
 case $option in
 	1 ) echo -e "1. Creating a new repository...\n"
 		newrep=null
 
-		while [ 1 ]
+		while true
 		do
 
-		read -p "Enter a new name for your repository: " newrep
+		read -r -p "Enter a new name for your repository: " newrep
 		if [ -d "$newrep" ]; then
 
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
-			mkdir $newrep
-			cd $newrep; touch logfile.txt; mkdir .backup-files;
+			mkdir "$newrep"
+			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
-			cd ..
+			cd .. 
 			echo "You have successfully created a repository named $newrep"
 			break
 
@@ -38,10 +38,10 @@ case $option in
 	2 ) echo "2.Accessing a repository..."
 
 		repname=null
-		read -p "Enter the name of the repository you wish to access...:   " repname
-		if [ -d $repname ]; then
+		read -r -p "Enter the name of the repository you wish to access...:   " repname
+		if [ -d "$repname" ]; then
 		echo -e "Repository found! Navigating.\n"
-		cd $repname
+		cd "$repname" || return
 
 		ls -l
 
@@ -58,18 +58,18 @@ case $option in
 		echo "7. Archive management"
 		echo "0. Return"
 
-		read -p "Enter your option: " accessOption
+		read -r -p "Enter your option: " accessOption
 
 		case $accessOption in
 		
 		1 ) echo "Add files to the repository"
 		
 			newfile=null
-			read -p "Name the file you wish to add: " newfile
-			if [ -f $newfile ]; then
+			read -r -p "Name the file you wish to add: " newfile
+			if [ -f "$newfile" ]; then
 				echo -e "There is already a file in the repository named $newfile\n"
 			else
-				touch $newfile
+				touch "$newfile"
 				mkdir .backup-files/"$newfile-copies"
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
@@ -78,17 +78,17 @@ case $option in
 		;;
 		2 ) echo "Check out a file"
 			filename=null
-			read -p "Enter the name of the file you wish to check out:   " filename
-			if [ -f $filename ]
+			read -r -p "Enter the name of the file you wish to check out:   " filename
+			if [ -f "$filename" ]
 			then
 				{
 				echo -e "File found! Navigating.\n"
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
 	       
-				touch $filename.copy
+				touch "$filename.copy"
 				touch uncommittedlog.txt
 				
-				cp $filename $filename.copy
+				cp "$filename" "$filename.copy"
 				cp logfile.txt uncommittedlog.txt
 				
 				checkOption=-1
@@ -101,41 +101,55 @@ case $option in
 				echo "0. Return"
 				echo
 				
-				read -p "Choose an option: " checkOption
+				read -r -p "Choose an option: " checkOption
 				
 				case $checkOption in
 
-		                	1 ) echo "1. Open"
-					more $filename.copy
-					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened out: $filename" >> uncommittedlog.txt
-
+		                	1 ) echo -e "Opening the file...\n"
+					
+					if [ -s "$filename.copy" ]; then
+					
+					more "$filename.copy"
+					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened: $filename" >> uncommittedlog.txt
+					
+					
+					else
+					echo "The file is empty."
+					
+					fi
                			 	;;
 				 
-               			 	2 ) echo "2. Edit"
-					nano  $filename.copy
+               			 	2 ) echo -e "Opening external editor... \n"
+					nano  "$filename.copy"
 
-					if cmp --silent --"$filename" "$filename.copy"; then
+					if cmp -s "$filename" "$filename.copy"]; then
+					true
+					else
+					echo "Changes recorded succesfully."
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
                 			fi
 					;;
 
 
-               				3 ) echo -e "3. Check in\n"
-					diff $filename $filename.copy
+               				3 ) echo -e "Checking in...\n"
+					
+					echo -e "Commiting changes:\n"
+					
+					diff "$filename" "$filename.copy"
 
 					confirmation=NULL
 
-					until [[ "$confirmation"=="y" || "$confirmation"=="n" ]]; do
-						read -p "Do you want to commit the changes (y\n?)" confirmation
+					until [ "$confirmation" == "y" ] || [ "$confirmation" == "n" ]; do
+						read -r -p "Do you want to commit the changes (y\n?)" confirmation
 						case $confirmation in
 							y ) 
 								choice=NULL
-								until [[ "$choice"=="y" || "$choice"=="n" ]]; do
+								until [ "$choice" == "y" ] || [ "$choice" == "n" ]; do
 									comment=""
-									read -p "Do you want to leave a comment (y\n?)" choice
+									read -r -p "Do you want to leave a comment (y\n?)" choice
 									case $choice in
 										y ) 
-											read -p "Write comment: " choice
+											read -r -p "Write a comment: " comment
 											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename\n User comment: $comment" >> uncommittedlog.txt
 										;;
 										n ) echo "Comment left blank"
@@ -143,9 +157,10 @@ case $option in
 										;;
 										* ) echo "Incorrect input"
 									esac
-								cp $filename .backup-files/"$filename-copies"/"$filename-$(date +%T)"
-								cp $filename.copy $filename
-								cp uncommittedlog.txt logfile.txt
+								done
+								cp "$filename" .backup-files/ "$filename-copies/$filename-$(date +%T)"
+								cp "$filename.copy" "$filename"
+								cp "uncommittedlog.txt" "logfile.txt"
 
 								echo "Changes committed."
 							;;
@@ -160,14 +175,15 @@ case $option in
 
 					if cmp --silent --"$filename" "$filename.copy"; then {
 				
-					confirmation = null
-					until [ $confirmation = y || $confirmation = n ]; do
+					confirmation=null
+					until [ $confirmation = y ] || [ $confirmation = n ]; do
 					
-					read -p "Do you want to commit the changes (y\n?)" confirmation
+					read -r -p "Do you want to commit the changes (y\n?)" confirmation
 					case $confirmation in
 					y )	echo "Confirmed - leaving unsaved."
 					;;
-					n )	continue
+					n )	checkOption=-1
+						continue
 					;;
 					*)	echo "Invalid input."
 					esac
@@ -175,7 +191,7 @@ case $option in
 					}
 					
 					fi
-					rm $filename.copy
+					rm "$filename.copy"
 					rm uncommittedlog.txt
 		       			;;
 					
@@ -195,24 +211,42 @@ case $option in
 		;;
 		4 ) echo "View the log file"
 			echo
-			cat logfile.txt
+			more logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
 		
+		echo -e "\nLooking for a source file.."
+		
+		sourceExists=$(locate -c -e "*.tar.gz")
+		
+		if [ "$sourceExists" -eq 0 ] ; then
+		echo "No tar with a .tar.gz extension file. Unable to proceed."
+		
+		elif [ "$sourceExists" -eq 1 ] ; then
+		
+		source=$(locate -e "*.tar.gz")
+		tar -zxvf ./*glob**tar.gz
+		cd "$source" || exit
+		
 		./configure
-		make
-		make install
+		sudo make
+		
+		else
+		
+		echo "There are more than one source files. Please keep only one."
+		
+		fi
 		
 		;;
 		6 ) echo "Rollback to a previous version"
 		
 
 			filename=null
-			read -p "Enter the name of the file you wish to rollback:   " filename
-			if [ -f $filename ]
+			read -r -p "Enter the name of the file you wish to rollback:   " filename
+			if [ -f "$filename" ]
 			then
 				{
-					cd .backup-files/"$filename-copies"
+					cd .backup-files/"$filename-copies" || return
 					option=-1
 					until [ "$option" -eq 0 ]; do
 					{
@@ -221,25 +255,25 @@ case $option in
 						echo "2. Choose version to rollback"
 						echo "0. Exit"
 
-						read -p "Choose an option: " option
+						read -r -p "Choose an option: " option
 						case $option in
 						1 )	diffFileName=null
-							read -p "Enter the name of file to compare:   " diffFileName
-							if [ -f $diffFileName ] 
+							read -r -p "Enter the name of file to compare:   " diffFileName
+							if [ -f "$diffFileName" ] 
 							then
 								{
-									diff ../../"$filename" $diffFileName
+									diff ../../"$filename" "$diffFileName"
 								}
 							else 
 								echo "File not found."
 							fi
 						;;
 						2 )	versionName=null
-							read -p "Enter the version file name:   " versionName
-							if [ -f $versionName ] 
+							read -r -p "Enter the version file name:   " versionName
+							if [ -f "$versionName" ] 
 							then
 								{
-									cp $versionName ../../"$filename"
+									cp "$versionName" ../../"$filename"
 									echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File version rolled back: $filename" >> ../../logfile.txt
 									echo "Version successfully rolled back!"
 								}
@@ -275,21 +309,23 @@ case $option in
 				echo "0. Return"
 				echo
 				
-				read -p "Choose an option: " checkOption
+				read -r -p "Choose an option: " checkOption
 				
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				zip -r archive_$repname.zip ../$repname
+				tar -czvf archive_$repname.tar.gz ../$repname
 				echo "Repository archived successfully!"
 				
 				;;
 				
 				2 ) echo -e "\nAccessing the latest archive..."
 				
-				if [ -d "$archive_$repname.zip" ]; then
-				unzip -d arhived/archive_$repname.zip 
-				cd archived
+				if [ -f "archive_$repname.tar.gz" ]; then
+				
+				mkdir .archived
+				tar -xzvf archive_$repname.tar.gz -C .archived
+				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
 				ls -l
@@ -300,10 +336,11 @@ case $option in
 				
 					echo "1. Preview a file"
 					echo "0. Return"
-				
+				        
+				        read -r -p "Choose an option:" input
 					case $input in
 				
-					1)	files=$(ls *.txt)
+					1 )     files=$(ls)
 						i=1
 
 						for j in $files
@@ -313,17 +350,14 @@ case $option in
 						i=$(( i + 1 ))
 						done
 					
-						read -p "Choose which file to preview:"
+						read -r -p "Choose which file to preview:"
 						echo "You're previewing file ${file[$input]}"
 					
-						more ${file[$input]}
+						more "${file[$input]}"
 				
-						else
-					echo "No previous archive found."
-					fi
+						
 					;;
-					
-					0) echo "Return"
+					0) echo "Returning."					
 					continue
 					;;
 					
@@ -331,7 +365,12 @@ case $option in
 					
 					esac
 				done
-					
+				
+				else
+				echo "No previous archive found."
+				fi
+				
+				;;	
 				0 ) echo "Return"
 				    cd ..
 				    continue
