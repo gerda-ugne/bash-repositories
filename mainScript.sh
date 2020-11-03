@@ -26,7 +26,7 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir "$newrep"
-			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files;
+			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd .. 
 			echo "You have successfully created a repository named $newrep"
@@ -323,7 +323,6 @@ case $option in
 				
 				if [ -f "archive_$repname.tar.gz" ]; then
 				
-				mkdir .archived
 				tar -xzvf archive_$repname.tar.gz -C .archived
 				cd .archived || return
 				
