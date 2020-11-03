@@ -323,8 +323,8 @@ case $option in
 				
 				if [ -f "archive_$repname.zip" ]; then
 				
-				unzip -d "archived/archive_$repname".zip 
 				mkdir .archived
+				unzip -d ".archived/archive_$repname".zip 
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
@@ -340,7 +340,7 @@ case $option in
 				        read -r -p "Choose an option:" input
 					case $input in
 				
-					1 )     files=$(ls -- *glob*.txt)
+					1 )     files=$(ls)
 						i=1
 
 						for j in $files
