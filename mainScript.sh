@@ -314,7 +314,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				tar -czvf archive_$repname.tar.gz ../$repname .
+				tar -czvf "archive_$repname.tar.gz ../$repname" .
 				echo "Repository archived successfully!"
 				
 				;;
@@ -323,17 +323,18 @@ case $option in
 				
 				if [ -f "archive_$repname.tar.gz" ]; then
 				
-				tar -xzvf archive_$repname.tar.gz -C .archived
+				tar -xzvf "archive_$repname.tar.gz" -C ".archived"
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
 				ls -l
 				
 				input=-1
+				innerinput=-1
 				
 				until [ "$input" -eq 0 ]; do
 				
-					echo "1. Preview a file"
+					echo -e "\n1. Preview a file"
 					echo "0. Return"
 				        
 				        read -r -p "Choose an option:" input
@@ -348,11 +349,12 @@ case $option in
 						file[i]=$j
 						i=$(( i + 1 ))
 						done
+						
+						
+						read -r -p "Choose which file to preview:" innerinput
+						echo "You're previewing file ${file[$innerinput]}"
 					
-						read -r -p "Choose which file to preview:"
-						echo "You're previewing file ${file[$input]}"
-					
-						more "${file[$input]}"
+						more "${file[$innerinput]}"
 				
 						
 					;;
