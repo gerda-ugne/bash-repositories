@@ -314,7 +314,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				tar -czvf archive_$repname.tar.gz ../$repname
+				tar -czvf archive_$repname.tar.gz ../$repname .
 				echo "Repository archived successfully!"
 				
 				;;
