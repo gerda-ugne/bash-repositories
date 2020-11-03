@@ -324,7 +324,8 @@ case $option in
 				if [ -f "archive_$repname.zip" ]; then
 				
 				unzip -d "archived/archive_$repname".zip 
-				cd archived || return
+				mkdir .archived
+				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
 				ls -l
@@ -336,8 +337,8 @@ case $option in
 					echo "1. Preview a file"
 					echo "0. Return"
 				        
-				        read -r -p "Choose an option:" miniinput
-					case $miniinput in
+				        read -r -p "Choose an option:" input
+					case $input in
 				
 					1 )     files=$(ls -- *glob*.txt)
 						i=1
@@ -356,7 +357,7 @@ case $option in
 				
 						
 					;;
-					0) echo "Return"
+					0) echo "Returning."					
 					continue
 					;;
 					
