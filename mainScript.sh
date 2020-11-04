@@ -114,7 +114,7 @@ case $option in
 					
 					
 					else
-					echo "The file is empty."
+					echo "Nothing to show. The file is empty."
 					
 					fi
                			 	;;
@@ -247,10 +247,15 @@ case $option in
 			then
 				{
 					cd .backup-files/"$filename-copies" || return
+					if [ -z "$(ls -A)" ]; then
+					   echo "No backups found for the file specified."
+					else
+
 					option=-1
 					until [ "$option" -eq 0 ]; do
 					{
 						ls -l
+						echo
 						echo "1. See differences between files"
 						echo "2. Choose version to rollback"
 						echo "0. Exit"
@@ -287,9 +292,12 @@ case $option in
 						esac
 					}
 					done
+					
 
 					cd ..
 					cd ..
+					
+					fi
 				}
 			else
 				{
@@ -304,7 +312,7 @@ case $option in
 				until [ "$checkOption" -eq 0 ]; do
 				
 				echo
-				echo "1. Archive the project into .zip"
+				echo "1. Archive the project into .tar.gz"
 				echo "2. Access the latest archive"
 				echo "0. Return"
 				echo
@@ -314,7 +322,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				tar -czvf "archive_$repname.tar.gz ../$repname" .
+				tar -czvf "archive_$repname.tar.gz" "../$repname" .
 				echo "Repository archived successfully!"
 				
 				;;
