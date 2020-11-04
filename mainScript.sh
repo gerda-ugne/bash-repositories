@@ -158,7 +158,7 @@ case $option in
 										* ) echo "Incorrect input"
 									esac
 								done
-								cp "$filename" .backup-files/ "$filename-copies/$filename-$(date +%T)"
+								cp "$filename" .backup-files/"$filename-copies/$filename-$(date +%T)"
 								cp "$filename.copy" "$filename"
 								cp "uncommittedlog.txt" "logfile.txt"
 
