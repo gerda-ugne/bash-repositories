@@ -1,5 +1,5 @@
 #!/bin/bash
-
+2>/dev/null
 option=-1
 
 echo "Welcome to the CVS!"
@@ -158,7 +158,7 @@ case $option in
 										* ) echo "Incorrect input"
 									esac
 								done
-								cp "$filename" .backup-files/ "$filename-copies/$filename-$(date +%T)"
+								cp "$filename" .backup-files/"$filename-copies/$filename-$(date +%T)"
 								cp "$filename.copy" "$filename"
 								cp "uncommittedlog.txt" "logfile.txt"
 
@@ -254,7 +254,7 @@ case $option in
 					option=-1
 					until [ "$option" -eq 0 ]; do
 					{
-						ls -l
+						find -printf "%f\n"
 						echo
 						echo "1. See differences between files"
 						echo "2. Choose version to rollback"
