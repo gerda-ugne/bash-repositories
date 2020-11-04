@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#command 2>/dev/null
+#uncomment to not show errors
 option=-1
 
 echo "Welcome to the CVS!"
@@ -43,8 +44,8 @@ case $option in
 		echo -e "Repository found! Navigating.\n"
 		cd "$repname" || return
 
-		ls -l
-
+		find . -type f -execdir basename '{}' ';'
+		
 		accessOption=-1
 
 		until [ "$accessOption" -eq 0 ]; do
@@ -206,7 +207,7 @@ case $option in
 	
 		;;
 		3 ) echo -e  "Showing the contents..\n"
-			ls -l
+			find . -type f -execdir basename '{}' ';'
 			echo -e "\n"
 		;;
 		4 ) echo "View the log file"
@@ -254,7 +255,7 @@ case $option in
 					option=-1
 					until [ "$option" -eq 0 ]; do
 					{
-						ls -l
+						find . -type f -execdir basename '{}' ';'
 						echo
 						echo "1. See differences between files"
 						echo "2. Choose version to rollback"
@@ -335,7 +336,7 @@ case $option in
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
-				ls -l
+				find . -type f -execdir basename '{}' ';'
 				
 				input=-1
 				innerinput=-1
