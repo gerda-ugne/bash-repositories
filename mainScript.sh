@@ -348,7 +348,7 @@ case $option in
 				        read -r -p "Choose an option:" input
 					case $input in
 				
-					1 )     files=$(ls)
+					1 )     files=$(ls -l)
 						i=1
 
 						for j in $files
