@@ -374,6 +374,7 @@ case $option in
 					;;
 					0) echo "Returning."	
 					cd ..
+					rm .archived/*
 					continue
 					;;
 					
