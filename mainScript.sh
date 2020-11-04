@@ -348,17 +348,19 @@ case $option in
 				        read -r -p "Choose an option:" input
 					case $input in
 				
-					1 )     files=$(ls)
+					1 )   
 						i=1
-
-						for j in $files
+					        OIFS="$IFS"
+                                                IFS=$'\n'
+                                                
+						for f in *
 						do
 						
-						echo "$i. $j"
-						file[i]=$j
+						echo "$i. $f"
+						file[i]=$f
 						i=$(( i + 1 ))
 						done
-						
+						IFS="$OIFS"
 						
 						read -r -p "Choose which file to preview:" innerinput
 						echo "You're previewing file ${file[$innerinput]}"
