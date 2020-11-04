@@ -356,13 +356,16 @@ case $option in
 						for f in *
 						do
 						
+						if [ $f == $repname ]; then continue; fi
 						echo "$i. $f"
 						file[i]=$f
 						i=$(( i + 1 ))
 						done
+						
 						IFS="$OIFS"
 						
 						read -r -p "Choose which file to preview:" innerinput
+						
 						echo "You're previewing file ${file[$innerinput]}"
 					
 						more "${file[$innerinput]}"
