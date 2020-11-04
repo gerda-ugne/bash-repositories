@@ -1,6 +1,5 @@
 #!/bin/bash
-#command 2>/dev/null
-#uncomment to not show errors
+
 option=-1
 
 echo "Welcome to the CVS!"
@@ -44,8 +43,8 @@ case $option in
 		echo -e "Repository found! Navigating.\n"
 		cd "$repname" || return
 
-		find . -type f -execdir basename '{}' ';'
-		
+		ls -l
+
 		accessOption=-1
 
 		until [ "$accessOption" -eq 0 ]; do
@@ -207,7 +206,7 @@ case $option in
 	
 		;;
 		3 ) echo -e  "Showing the contents..\n"
-			find . -type f -execdir basename '{}' ';'
+			ls -l
 			echo -e "\n"
 		;;
 		4 ) echo "View the log file"
@@ -255,7 +254,7 @@ case $option in
 					option=-1
 					until [ "$option" -eq 0 ]; do
 					{
-						find . -type f -execdir basename '{}' ';'
+						ls -l
 						echo
 						echo "1. See differences between files"
 						echo "2. Choose version to rollback"
@@ -336,7 +335,7 @@ case $option in
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
-				find . -type f -execdir basename '{}' ';'
+				ls -l
 				
 				input=-1
 				innerinput=-1
@@ -349,12 +348,13 @@ case $option in
 				        read -r -p "Choose an option:" input
 					case $input in
 				
-					1 )     files=$(ls -l)
+					1 )     files=$(ls)
 						i=1
 
 						for j in $files
 						do
-						echo "$i.$j"
+						
+						echo "$i. $j"
 						file[i]=$j
 						i=$(( i + 1 ))
 						done
