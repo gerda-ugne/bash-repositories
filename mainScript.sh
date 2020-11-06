@@ -27,6 +27,7 @@ case $option in
 		else 
 			mkdir "$newrep"
 			chmod +t "$newrep"
+			chmod u=rwx g=rwx o-rwx "$newrep"
 			
 			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
