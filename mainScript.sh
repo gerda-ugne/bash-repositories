@@ -26,6 +26,8 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir "$newrep"
+			chmod +t "$newrep"
+			
 			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd .. 
@@ -356,7 +358,7 @@ case $option in
 						for f in *
 						do
 						
-						if [ $f == $repname ]; then continue; fi
+						if [ "$f" == "$repname" ]; then continue; fi
 						echo "$i. $f"
 						file[i]=$f
 						i=$(( i + 1 ))
