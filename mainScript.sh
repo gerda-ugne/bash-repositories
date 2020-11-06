@@ -26,7 +26,10 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir "$newrep"
+			
+			
 			chmod +t "$newrep"
+			chgrp users "$newrep"
 			chmod u=rwx g=rwx o-rwx "$newrep"
 			
 			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
