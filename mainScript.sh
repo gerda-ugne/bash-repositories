@@ -1,11 +1,10 @@
 #!/bin/bash
 
-2>/dev/null
 option=-1
 
 echo "Welcome to the VCS!"
 
-until [ "$option" -eq 0 ]; do
+until [ "$option" -eq 0 2>/dev/null ]; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
@@ -56,7 +55,7 @@ case $option in
 
 		accessOption=-1
 
-		until [ "$accessOption" -eq 0 ]; do
+		until [ "$accessOption" -eq 0 2>/dev/null ]; do
 		echo -e "\nChoose one of the options: \n"
 		echo "1. Add files to the repository"
 		echo "2. Check out a file"
@@ -102,7 +101,7 @@ case $option in
 				cp logfile.txt uncommittedlog.txt
 				
 				checkOption=-1
-				until [ "$checkOption" -eq 0 ]; do
+				until [ "$checkOption" -eq 0 2>/dev/null ]; do
 				
 				echo
 				echo "1. Open the file"
@@ -132,11 +131,11 @@ case $option in
                			 	2 ) echo -e "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					if cmp -s "$filename" "$filename.copy"]; then
-					true
+					if [ cmp -s "$filename" "$filename.copy" ]; then
+						true
 					else
-					echo "Changes recorded succesfully."
-					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
+						echo "Changes recorded succesfully."
+						echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File edited: $filename" >> uncommittedlog.txt
                 			fi
 					;;
 
@@ -183,7 +182,7 @@ case $option in
 
 					0 ) echo "Returning."
 
-					if cmp --silent --"$filename" "$filename.copy"; then {
+					if [ cmp --silent --"$filename" "$filename.copy" ]; then {
 				
 					confirmation=null
 					until [ $confirmation = y ] || [ $confirmation = n ]; do
@@ -228,9 +227,9 @@ case $option in
 		echo -e "\nLooking for a source file.."
 		sourceExists=$(ls -dq *.tar.gz | wc -l)
 		
-		if [ "$sourceExists" -eq 0 ]; then
+		if [ "$sourceExists" -eq 0 2>/dev/null ]; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
-		elif [ "$sourceExists" -eq 1 ]; then
+		elif [ "$sourceExists" -eq 1 2>/dev/null ]; then
 			source=$(ls -dq *.tar.gz)
 			mkdir source
 			tar -zxvf "$source" -C source
@@ -238,13 +237,12 @@ case $option in
 
 			if ./configure; then
 			make
-			cd ..
 			else
 			echo "No configuration file found. Cannot proceed."
-			cd .. 
 			rm -r source
 			fi
-
+			
+			cd ..
 
 		else
 			echo "There are more than one source files. Please keep only one."
@@ -264,7 +262,7 @@ case $option in
 					else
 
 					option=-1
-					until [ "$option" -eq 0 ]; do
+					until [ "$option" -eq 0 2>/dev/null ]; do
 					{
 						find -printf "%f\n"
 						echo
@@ -321,7 +319,7 @@ case $option in
 			
 				checkOption=-1
 			
-				until [ "$checkOption" -eq 0 ]; do
+				until [ "$checkOption" -eq 0 2>/dev/null ]; do
 				
 				echo
 				echo "1. Archive the project into .tar.gz"
@@ -352,7 +350,7 @@ case $option in
 				input=-1
 				innerinput=-1
 				
-				until [ "$input" -eq 0 ]; do
+				until [ "$input" -eq 0 2>/dev/null ]; do
 				
 					echo -e "\n1. Preview a file"
 					echo "0. Return"
@@ -367,11 +365,10 @@ case $option in
                                                 
 						for f in *
 						do
-						
-						if [ "$f" == "$repname" ]; then continue; fi
-						echo "$i. $f"
-						file[i]=$f
-						i=$(( i + 1 ))
+							if [ "$f" == "$repname" ]; then continue; fi
+							echo "$i. $f"
+							file[i]=$f
+							i=$(( i + 1 ))
 						done
 						
 						IFS="$OIFS"
