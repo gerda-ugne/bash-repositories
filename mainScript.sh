@@ -78,10 +78,7 @@ case $option in
 				echo -e "There is already a file in the repository named $newfile\n"
 			else
 				touch "$newfile"
-				chmod u=rwx g=rwx o-rwx "$newfile"
-				
 				mkdir .backup-files/"$newfile-copies"
-				chmod u=rwx g=rwx o-rwx .backup-files/"$newfile-copies"
 				
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
@@ -98,10 +95,7 @@ case $option in
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked out: $filename" >> logfile.txt 
 	       
 				touch "$filename.copy"
-				chmod u=rwx g=rwx o-rwx "$filename.copy"
-				
 				touch uncommittedlog.txt
-				chmod u=rwx g=rwx o-rwx "uncommitedlog.txt"
 				
 				cp "$filename" "$filename.copy"
 				cp logfile.txt uncommittedlog.txt
@@ -244,7 +238,7 @@ case $option in
 		cd "$source" || exit
 		
 		./configure
-		sudo make
+		make
 		
 		else
 		
