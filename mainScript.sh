@@ -224,28 +224,21 @@ case $option in
 		5 ) echo "Compile the project using its source code"
 		
 		echo -e "\nLooking for a source file.."
-		
-		sourceExists=$(locate -c -e "*.tar.gz")
-		
-		if [ "$sourceExists" -eq 0 ] ; then
-		echo "No tar with a .tar.gz extension file. Unable to proceed."
-		
-		elif [ "$sourceExists" -eq 1 ] ; then
-		
-		source=$(locate -e "*.tar.gz")
-		tar -zxvf ./*glob**tar.gz
-		cd "$source" || exit
-		
-		./configure
-		make
-		
+		sourceExists=$(ls -dq *.tar.gz | wc -l)
+		echo "$sourceExists"
+		if [ "$sourceExists" -eq 0 ]; then
+			echo "No tar with a .tar.gz extension file. Unable to proceed."
+		elif [ "$sourceExists" -eq 1 ]; then
+			source=$(ls -dq *.tar.gz)
+			mkdir source
+			tar -zxvf $source -C source
+			cd source || exit
+			./configure && make && sudo make install
+			cd ..
 		else
-		
-		echo "There are more than one source files. Please keep only one."
-		
+			echo "There are more than one source files. Please keep only one."
 		fi
-		
-		;;
+				;;
 		6 ) echo "Rollback to a previous version"
 		
 
@@ -406,6 +399,7 @@ case $option in
 			
 					;;
 		0 ) echo "Return"
+			cd ..
 		;;
 		* ) echo "Invalid input. Please try again."
 		esac
