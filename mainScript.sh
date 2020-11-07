@@ -1,12 +1,13 @@
 #!/bin/bash
 option=-1
 
-echo "Welcome to the CVS!"
+echo "Welcome to the VCS!"
 
 until [ "$option" -eq 0 ]; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
+echo "3. Display the repositories"
 echo -e  "0. Exit\n"
 
 read -r -p "Choose an option: " option
@@ -25,7 +26,14 @@ case $option in
 		echo -e "There is already a repository with the given name. Please try again. \n"
 		else 
 			mkdir "$newrep"
+			
+			
+			chmod +t "$newrep"
+			chgrp users "$newrep"
+			chmod u=rwx g=rwx o-rwx "$newrep"
+			
 			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
+			
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd .. 
 			echo "You have successfully created a repository named $newrep"
@@ -70,6 +78,7 @@ case $option in
 			else
 				touch "$newfile"
 				mkdir .backup-files/"$newfile-copies"
+				
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
 			fi
@@ -108,7 +117,7 @@ case $option in
 					
 					if [ -s "$filename.copy" ]; then
 					
-					more "$filename.copy"
+					less "$filename.copy"
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened: $filename" >> uncommittedlog.txt
 					
 					
@@ -228,7 +237,7 @@ case $option in
 		cd "$source" || exit
 		
 		./configure
-		sudo make
+		make
 		
 		else
 		
@@ -347,18 +356,24 @@ case $option in
 				        read -r -p "Choose an option:" input
 					case $input in
 				
-					1 )     files=$(ls)
+					1 )   
 						i=1
-
-						for j in $files
+					        OIFS="$IFS"
+                                                IFS=$'\n'
+                                                
+						for f in *
 						do
-						echo "$i.$j"
-						file[i]=$j
+						
+						if [ "$f" == "$repname" ]; then continue; fi
+						echo "$i. $f"
+						file[i]=$f
 						i=$(( i + 1 ))
 						done
 						
+						IFS="$OIFS"
 						
 						read -r -p "Choose which file to preview:" innerinput
+						
 						echo "You're previewing file ${file[$innerinput]}"
 					
 						more "${file[$innerinput]}"
@@ -367,6 +382,7 @@ case $option in
 					;;
 					0) echo "Returning."	
 					cd ..
+					rm .archived/*
 					continue
 					;;
 					
@@ -399,6 +415,18 @@ case $option in
 		else echo "Repository not found. Please try again"
 
 		fi
+	    ;;
+	    
+	3 ) echo -e "Displaying the contents..\n"
+	
+	    if [ "$(ls -A)" ]; then
+   		  ls -l
+	    else
+	    
+            echo "No repositories present." 
+	    
+            fi
+	
 	    ;;
 
 	0 ) echo "Thank you for using the system! Exiting now."
