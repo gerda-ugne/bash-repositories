@@ -1,4 +1,6 @@
 #!/bin/bash
+
+#2>/dev/null
 option=-1
 
 echo "Welcome to the VCS!"
