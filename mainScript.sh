@@ -233,7 +233,7 @@ case $option in
 		elif [ "$sourceExists" -eq 1 ]; then
 			source=$(ls -dq *.tar.gz)
 			mkdir source
-			tar -zxvf $source -C source
+			tar -zxvf "$source" -C source
 			cd source || exit
 
 			if ./configure; then
