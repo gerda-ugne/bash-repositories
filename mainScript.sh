@@ -2,12 +2,13 @@
 
 option=-1
 
-echo "Welcome to the CVS!"
+echo "Welcome to the VCS!"
 
 until [ "$option" -eq 0 ]; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
+echo "3. Display the repositories"
 echo -e  "0. Exit\n"
 
 read -r -p "Choose an option: " option
@@ -33,6 +34,7 @@ case $option in
 			chmod u=rwx g=rwx o-rwx "$newrep"
 			
 			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
+			
 			echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] Repository created: $newrep" >> logfile.txt
 			cd .. 
 			echo "You have successfully created a repository named $newrep"
@@ -77,6 +79,7 @@ case $option in
 			else
 				touch "$newfile"
 				mkdir .backup-files/"$newfile-copies"
+				
 				echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File added to repository: $newfile" >> logfile.txt
 				echo "You have successfully created a file named $newfile"
 			fi
@@ -115,7 +118,7 @@ case $option in
 					
 					if [ -s "$filename.copy" ]; then
 					
-					more "$filename.copy"
+					less "$filename.copy"
 					echo "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File opened: $filename" >> uncommittedlog.txt
 					
 					
@@ -235,7 +238,7 @@ case $option in
 		cd "$source" || exit
 		
 		./configure
-		sudo make
+		make
 		
 		else
 		
@@ -414,6 +417,18 @@ case $option in
 		else echo "Repository not found. Please try again"
 
 		fi
+	    ;;
+	    
+	3 ) echo -e "Displaying the contents..\n"
+	
+	    if [ "$(ls -A)" ]; then
+   		  ls -l
+	    else
+	    
+            echo "No repositories present." 
+	    
+            fi
+	
 	    ;;
 
 	0 ) echo "Thank you for using the system! Exiting now."
