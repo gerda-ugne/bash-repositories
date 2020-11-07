@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#2>/dev/null
+2>/dev/null
 option=-1
 
 echo "Welcome to the VCS!"
@@ -31,8 +31,8 @@ case $option in
 			
 			
 			chmod +t "$newrep"
-			chgrp users "$newrep"
-			chmod u=rwx g=rwx o-rwx "$newrep"
+			sudo chgrp bash "$newrep"
+			sudo chmod u=rwx,g=rwx,o-rwx "$newrep"
 			
 			cd "$newrep" || return; touch logfile.txt; mkdir .backup-files; mkdir .archived;
 			
@@ -227,7 +227,7 @@ case $option in
 		
 		echo -e "\nLooking for a source file.."
 		sourceExists=$(ls -dq *.tar.gz | wc -l)
-		echo "$sourceExists"
+		
 		if [ "$sourceExists" -eq 0 ]; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
 		elif [ "$sourceExists" -eq 1 ]; then
@@ -235,8 +235,17 @@ case $option in
 			mkdir source
 			tar -zxvf $source -C source
 			cd source || exit
-			./configure && make && sudo make install
+
+			if ./configure; then
+			make
 			cd ..
+			else
+			echo "No configuration file found. Cannot proceed."
+			cd .. 
+			rm -r source
+			fi
+
+
 		else
 			echo "There are more than one source files. Please keep only one."
 		fi
