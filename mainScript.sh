@@ -245,7 +245,7 @@ case $option in
 		5 ) echo "Compile the project using its source code"
 		
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq ./*.tar.gz 2>/dev/null | wc -l 2>/dev/null )
+		sourceExists=$(ls -dq ./*.tar.gz >/dev/null 2>&1  | wc -l >/dev/null 2>&1 )
 		ls
 		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
