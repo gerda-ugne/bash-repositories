@@ -249,7 +249,7 @@ case $option in
 		fi
 		
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq ./*.tar.gz | wc -l >/dev/null 2>&1 )
+		sourceExists=$(ls -dq ./*.tar.gz | wc -l 2>/dev/null)
 		
 		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
