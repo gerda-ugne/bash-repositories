@@ -67,7 +67,6 @@ case $option in
 		echo "0. Return"
 
 		read -r -p "Enter your option: " accessOption
-
 		case $accessOption in
 		
 		1 ) echo "Add files to the repository"
@@ -243,18 +242,17 @@ case $option in
 			more logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
-		
+
 		if [ -d source ]; then
 		rm -r source
 		fi
-		
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq ./*.tar.gz | wc -l 2>/dev/null)
-		
+		sourceExists=$(ls -dq *.tar.gz | wc -l 2>/dev/null)
+
 		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
 		elif [ "$sourceExists" -eq 1 ] 2>/dev/null ; then
-			source=$(ls -dq ./*.tar.gz)
+			source=$(ls -dq *.tar.gz)
 			mkdir source
 			tar -zxvf "$source" -C source
 			cd source || exit
@@ -266,7 +264,6 @@ case $option in
 				cd ..
 				rm -r source
 			fi
-
 		else
 			echo "There are more than one source files. Please keep only one."
 		fi
@@ -339,7 +336,7 @@ case $option in
 			fi
 		;;
 		7 ) echo "Archive management"
-			
+				
 				checkOption=-1
 			
 				until [ "$checkOption" -eq 0 ] 2>/dev/null ; do
@@ -355,7 +352,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				if tar -czvf "archive_$repname.tar.gz" "../$repname" . 2>/dev/null ; then
+				if tar -czvf "archive_$repname.tar.gz" "../$repname" . 2>/dev/null; then
 				echo "Repository archived successfully!"
 				fi
 				
@@ -406,7 +403,6 @@ case $option in
 						
 					;;
 					0) echo "Returning."	
-					cd ..
 					rm -r .archived/*
 					continue
 					;;
@@ -422,7 +418,6 @@ case $option in
 				
 				;;	
 				0 ) echo "Return"
-				    cd ..
 				    continue
 				    ;;
 				* ) echo "Invalid input."
