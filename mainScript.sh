@@ -264,7 +264,6 @@ case $option in
 			else
 				echo "No configuration file found. Cannot proceed."
 				cd ..
-				ls
 				rm -r source
 			fi
 
