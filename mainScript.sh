@@ -403,7 +403,7 @@ case $option in
 					;;
 					0) echo "Returning."	
 					cd ..
-					rm .archived/*
+					rm -r .archived/*
 					continue
 					;;
 					
