@@ -131,7 +131,9 @@ case $option in
                			 	2 ) echo -e "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					if [ cmp -s "$filename" "$filename.copy" ]; then
+					diff -s "$filename" "$filename.copy" &>/dev/null
+
+					if [ $? -eq 0 ]; then
 						true
 					else
 						echo "Changes recorded succesfully."
@@ -143,8 +145,6 @@ case $option in
                				3 ) echo -e "Checking in...\n"
 					
 					echo -e "Commiting changes:\n"
-					
-					diff "$filename" "$filename.copy"
 
 					confirmation=NULL
 
@@ -181,21 +181,42 @@ case $option in
 					;;
 
 					0 ) echo "Returning."
+					
+					diff -s "$filename" "$filename.copy" &>/dev/null
 
-					if [ cmp --silent --"$filename" "$filename.copy" ]; then {
+					if [ $? -eq 1 ]; then {
 				
 					confirmation=null
 					until [ $confirmation = y ] || [ $confirmation = n ]; do
 					
-					read -r -p "Do you want to commit the changes (y\n?)" confirmation
-					case $confirmation in
-					y )	echo "Confirmed - leaving unsaved."
-					;;
-					n )	checkOption=-1
-						continue
-					;;
-					*)	echo "Invalid input."
-					esac
+						read -r -p "Do you want to commit the changes (y\n?)" confirmation
+						case $confirmation in
+							y )	echo "Confirmed - saving file"
+								choice=NULL
+								until [ "$choice" == "y" ] || [ "$choice" == "n" ]; do
+									comment=""
+									read -r -p "Do you want to leave a comment (y\n?)" choice
+									case $choice in
+										y ) 
+											read -r -p "Write a comment: " comment
+											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename\n User comment: $comment" >> uncommittedlog.txt
+										;;
+										n ) echo "Comment left blank"
+											echo -e "[$(date +%d)/$(date +%m)/$(date +%Y) @ $(date +%T)] File checked in: $filename" >> uncommittedlog.txt
+										;;
+										* ) echo "Incorrect input"
+									esac
+								done
+								cp "$filename" .backup-files/"$filename-copies/$filename-$(date +%T)"
+								cp "$filename.copy" "$filename"
+								cp "uncommittedlog.txt" "logfile.txt"
+								echo "Changes committed."
+								continue
+							;;
+							n ) continue
+							;;
+							*)	echo "Invalid input."
+						esac
 					done
 					}
 					
@@ -226,7 +247,7 @@ case $option in
 		
 		echo -e "\nLooking for a source file.."
 		sourceExists=$(ls -dq *.tar.gz | wc -l)
-		
+		ls
 		if [ "$sourceExists" -eq 0 2>/dev/null ]; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
 		elif [ "$sourceExists" -eq 1 2>/dev/null ]; then
@@ -235,14 +256,14 @@ case $option in
 			tar -zxvf "$source" -C source
 			cd source || exit
 
-			if ./configure; then
+			if ./configure 2>/dev/null; then
 			make
 			else
-			echo "No configuration file found. Cannot proceed."
-			rm -r source
+				echo "No configuration file found. Cannot proceed."
+				cd ..
+				ls
+				rm -r source
 			fi
-			
-			cd ..
 
 		else
 			echo "There are more than one source files. Please keep only one."
