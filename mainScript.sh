@@ -4,7 +4,7 @@ option=-1
 
 echo "Welcome to the VCS!"
 
-until [ "$option" -eq 0 2>/dev/null ]; do
+until [ "$option" -eq 0 ] 2>/dev/null ; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
@@ -55,7 +55,7 @@ case $option in
 
 		accessOption=-1
 
-		until [ "$accessOption" -eq 0 2>/dev/null ]; do
+		until [ "$accessOption" -eq 0 ] 2>/dev/null; do
 		echo -e "\nChoose one of the options: \n"
 		echo "1. Add files to the repository"
 		echo "2. Check out a file"
@@ -67,7 +67,6 @@ case $option in
 		echo "0. Return"
 
 		read -r -p "Enter your option: " accessOption
-
 		case $accessOption in
 		
 		1 ) echo "Add files to the repository"
@@ -101,7 +100,7 @@ case $option in
 				cp logfile.txt uncommittedlog.txt
 				
 				checkOption=-1
-				until [ "$checkOption" -eq 0 2>/dev/null ]; do
+				until [ "$checkOption" -eq 0 ] 2>/dev/null ; do
 				
 				echo
 				echo "1. Open the file"
@@ -131,9 +130,8 @@ case $option in
                			 	2 ) echo -e "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					diff -s "$filename" "$filename.copy" &>/dev/null
 
-					if [ $? -eq 0 ]; then
+					if diff -s "$filename" "$filename.copy" &>/dev/null ; then
 						true
 					else
 						echo "Changes recorded succesfully."
@@ -244,13 +242,16 @@ case $option in
 			more logfile.txt
 		;;
 		5 ) echo "Compile the project using its source code"
-		
+
+		if [ -d source ]; then
+		rm -r source
+		fi
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq *.tar.gz | wc -l)
-		ls
-		if [ "$sourceExists" -eq 0 2>/dev/null ]; then
+		sourceExists=$(ls -dq *.tar.gz | wc -l 2>/dev/null)
+
+		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
-		elif [ "$sourceExists" -eq 1 2>/dev/null ]; then
+		elif [ "$sourceExists" -eq 1 ] 2>/dev/null ; then
 			source=$(ls -dq *.tar.gz)
 			mkdir source
 			tar -zxvf "$source" -C source
@@ -261,10 +262,8 @@ case $option in
 			else
 				echo "No configuration file found. Cannot proceed."
 				cd ..
-				ls
 				rm -r source
 			fi
-
 		else
 			echo "There are more than one source files. Please keep only one."
 		fi
@@ -277,15 +276,15 @@ case $option in
 			if [ -f "$filename" ]
 			then
 				{
-					cd .backup-files/"$filename-copies" || return
+					cd .backup-files/"$filename-copies" || exit
 					if [ -z "$(ls -A)" ]; then
 					   echo "No backups found for the file specified."
 					else
 
 					option=-1
-					until [ "$option" -eq 0 2>/dev/null ]; do
+					until [ "$option" -eq 0 ] 2>/dev/null ; do
 					{
-						find -printf "%f\n"
+						find ./ -printf "%f \n" 
 						echo
 						echo "1. See differences between files"
 						echo "2. Choose version to rollback"
@@ -337,10 +336,10 @@ case $option in
 			fi
 		;;
 		7 ) echo "Archive management"
-			
+				
 				checkOption=-1
 			
-				until [ "$checkOption" -eq 0 2>/dev/null ]; do
+				until [ "$checkOption" -eq 0 ] 2>/dev/null ; do
 				
 				echo
 				echo "1. Archive the project into .tar.gz"
@@ -353,16 +352,17 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				tar -czvf "archive_$repname.tar.gz" "../$repname" .
+				if tar -czvf "archive_$repname.tar.gz" "../$repname" . 2>/dev/null; then
 				echo "Repository archived successfully!"
+				fi
 				
 				;;
 				
 				2 ) echo -e "\nAccessing the latest archive..."
 				
-				if [ -f "archive_$repname.tar.gz" ]; then
+				if [ -f "archive_$repname.tar.gz" ] 2>/dev/null ; then
 				
-				tar -xzvf "archive_$repname.tar.gz" -C ".archived"
+				tar -xzvf "archive_$repname.tar.gz" -C ".archived" 2>/dev/null
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
@@ -371,7 +371,7 @@ case $option in
 				input=-1
 				innerinput=-1
 				
-				until [ "$input" -eq 0 2>/dev/null ]; do
+				until [ "$input" -eq 0 ] 2>/dev/null ; do
 				
 					echo -e "\n1. Preview a file"
 					echo "0. Return"
@@ -403,8 +403,7 @@ case $option in
 						
 					;;
 					0) echo "Returning."	
-					cd ..
-					rm .archived/*
+					rm -r .archived/*
 					continue
 					;;
 					
@@ -419,7 +418,6 @@ case $option in
 				
 				;;	
 				0 ) echo "Return"
-				    cd ..
 				    continue
 				    ;;
 				* ) echo "Invalid input."
