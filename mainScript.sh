@@ -245,7 +245,7 @@ case $option in
 		5 ) echo "Compile the project using its source code"
 		
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq ./*glob**.tar.gz | wc -l)
+		sourceExists=$(ls -dq ./*glob**.tar.gz | wc -l) 2>/dev/null
 		ls
 		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
@@ -361,7 +361,7 @@ case $option in
 				
 				if [ -f "archive_$repname.tar.gz" ]; then
 				
-				tar -xzvf "archive_$repname.tar.gz" -C ".archived"
+				tar -xzvf "archive_$repname.tar.gz" -C ".archived" 2> dev/null
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
