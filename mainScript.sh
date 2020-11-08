@@ -276,7 +276,7 @@ case $option in
 			if [ -f "$filename" ]
 			then
 				{
-					cd .backup-files/"$filename-copies" || return
+					cd .backup-files/"$filename-copies" || exit
 					if [ -z "$(ls -A)" ]; then
 					   echo "No backups found for the file specified."
 					else
