@@ -4,7 +4,7 @@ option=-1
 
 echo "Welcome to the VCS!"
 
-until [ "$option" -eq 0 2>/dev/null ]; do
+until [ "$option" -eq 0 ] 2>/dev/null ; do
 
 echo -e "\n1. Create a new repository"
 echo "2. Access a repository"
@@ -55,7 +55,7 @@ case $option in
 
 		accessOption=-1
 
-		until [ "$accessOption" -eq 0 2>/dev/null ]; do
+		until [ "$accessOption" -eq 0 ] 2>/dev/null; do
 		echo -e "\nChoose one of the options: \n"
 		echo "1. Add files to the repository"
 		echo "2. Check out a file"
@@ -101,7 +101,7 @@ case $option in
 				cp logfile.txt uncommittedlog.txt
 				
 				checkOption=-1
-				until [ "$checkOption" -eq 0 2>/dev/null ]; do
+				until [ "$checkOption" -eq 0 ] 2>/dev/null ; do
 				
 				echo
 				echo "1. Open the file"
@@ -131,9 +131,8 @@ case $option in
                			 	2 ) echo -e "Opening external editor... \n"
 					nano  "$filename.copy"
 
-					diff -s "$filename" "$filename.copy" &>/dev/null
 
-					if [ $? -eq 0 ]; then
+					if diff -s "$filename" "$filename.copy" &>/dev/null ; then
 						true
 					else
 						echo "Changes recorded succesfully."
@@ -246,12 +245,12 @@ case $option in
 		5 ) echo "Compile the project using its source code"
 		
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq *.tar.gz | wc -l)
+		sourceExists=$(ls -dq ./*glob**.tar.gz | wc -l)
 		ls
-		if [ "$sourceExists" -eq 0 2>/dev/null ]; then
+		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
-		elif [ "$sourceExists" -eq 1 2>/dev/null ]; then
-			source=$(ls -dq *.tar.gz)
+		elif [ "$sourceExists" -eq 1 ] 2>/dev/null ; then
+			source=$(ls -dq ./*glob**.tar.gz)
 			mkdir source
 			tar -zxvf "$source" -C source
 			cd source || exit
@@ -283,9 +282,9 @@ case $option in
 					else
 
 					option=-1
-					until [ "$option" -eq 0 2>/dev/null ]; do
+					until [ "$option" -eq 0 ] 2>/dev/null ; do
 					{
-						find -printf "%f\n"
+						find ./ -printf "%f \n" 
 						echo
 						echo "1. See differences between files"
 						echo "2. Choose version to rollback"
@@ -340,7 +339,7 @@ case $option in
 			
 				checkOption=-1
 			
-				until [ "$checkOption" -eq 0 2>/dev/null ]; do
+				until [ "$checkOption" -eq 0 ] 2>/dev/null ; do
 				
 				echo
 				echo "1. Archive the project into .tar.gz"
@@ -371,7 +370,7 @@ case $option in
 				input=-1
 				innerinput=-1
 				
-				until [ "$input" -eq 0 2>/dev/null ]; do
+				until [ "$input" -eq 0 ] 2>/dev/null ; do
 				
 					echo -e "\n1. Preview a file"
 					echo "0. Return"
