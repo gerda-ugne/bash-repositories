@@ -250,7 +250,7 @@ case $option in
 		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
 		elif [ "$sourceExists" -eq 1 ] 2>/dev/null ; then
-			source=$(ls -dq ./*glob**.tar.gz)
+			source=$(ls -dq ./*.tar.gz)
 			mkdir source
 			tar -zxvf "$source" -C source
 			cd source || exit
