@@ -245,7 +245,7 @@ case $option in
 		5 ) echo "Compile the project using its source code"
 		
 		echo -e "\nLooking for a source file.."
-		sourceExists=$(ls -dq ./*glob**.tar.gz | wc -l) 2>/dev/null
+		sourceExists=$(ls -dq ./*glob**.tar.gz | wc -l 2>/dev/null)
 		ls
 		if [ "$sourceExists" -eq 0 ] 2>/dev/null ; then
 			echo "No tar with a .tar.gz extension file. Unable to proceed."
@@ -352,7 +352,7 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				if tar -czvf "archive_$repname.tar.gz" "../$repname" .; then
+				if tar -czvf "archive_$repname.tar.gz" "../$repname" . 2>/dev/null ; then
 				echo "Repository archived successfully!"
 				fi
 				
@@ -360,7 +360,7 @@ case $option in
 				
 				2 ) echo -e "\nAccessing the latest archive..."
 				
-				if [ -f "archive_$repname.tar.gz" ]; then
+				if [ -f "archive_$repname.tar.gz" ] 2>/dev/null ; then
 				
 				tar -xzvf "archive_$repname.tar.gz" -C ".archived" 2>/dev/null
 				cd .archived || return
