@@ -352,8 +352,9 @@ case $option in
 				case $checkOption in
 				
 				1 ) echo -e "\nArchiving the project..."
-				tar -czvf "archive_$repname.tar.gz" "../$repname" .
+				if tar -czvf "archive_$repname.tar.gz" "../$repname" .; then
 				echo "Repository archived successfully!"
+				fi
 				
 				;;
 				
@@ -361,7 +362,7 @@ case $option in
 				
 				if [ -f "archive_$repname.tar.gz" ]; then
 				
-				tar -xzvf "archive_$repname.tar.gz" -C ".archived" 2> dev/null
+				tar -xzvf "archive_$repname.tar.gz" -C ".archived" 2>/dev/null
 				cd .archived || return
 				
 				echo -e "List of files in the archive: \n"
